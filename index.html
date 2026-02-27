@@ -1,849 +1,285 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=0.7">
-
-<title>Prescription Summary – Kiara Optometry</title>
-
+<title>Cross Cylinder Calculator</title>
 <style>
+:root {
+  /* Circle colors */
+  --circle1-color: black;
+  --circle2-color: blue;
+  --circle3-color: red;
+  --plano-color: green;
 
-body *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
-  font-size:14px !important;
+  /* UI styling */
+  --button-height: 30px;
+  --button-width: 120px;
+  --button-margin: 4px;
+  --input-width: 70px;
+  --input-height: 28px;
+  --input-font-size: 14px;
+  --canvas-border: 1px solid #ccc;
+  --canvas-width: 600px;
+  --canvas-height: 500px;
 }
 
-body{
-  margin:0; padding:0;
-  font-family:"Inter","Helvetica Neue",Arial;
-  background:#fff;
+body {
+  text-align: center; 
+  font-family: Arial, sans-serif; 
+  margin-top: 20px;
 }
-#report-container{
-  width:90%; max-width:580px;
-  margin:20px auto 80px auto;
-  padding-bottom:40px;
+
+canvas {
+  border: var(--canvas-border);
+  margin-top: 20px;
 }
-.section2{
+
+input[type="number"] {
+  width: var(--input-width);
+  height: var(--input-height);
+  text-align: center;
+  font-size: var(--input-font-size);
+  margin: 2px;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+
+button {
+  height: var(--button-height);
+  width: var(--button-width);
+  margin: var(--button-margin);
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #333;
   background: white;
-  margin-bottom:20px; padding:15px;
-  border-radius:14px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  color: black;
+  font-weight: bold;
 }
 
-.section{
-  border:1px solid grey;
-  background:#fdfcf7;
-  margin-bottom:10px; padding:15px;
-  border-radius:14px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
-}
-.header-section{ text-align:center; background:#ffffeb; }
-.logo{ width:90px; margin-bottom:10px; }
-.title{ margin:0; font-size:26px; font-weight:300; }
-#exam-datetime{ margin-top:6px; font-size:13px; opacity:.8; }
-#rx-toggle-wrapper{ margin-top:14px; }
-.toggle-label{ font-size:13px; margin-right:8px; }
-.toggle-btn{
-  padding:6px 12px;
-  border:1px solid black;
-  background:black;          /* ACTIVE */
-  color:white;
-  border-radius:6px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:300;
-  margin-right:6px;
-}
-.toggle-btn.inactive{
-  background:#fff; color:black;
-}
-h2 {
-  font-size: 17px;
-  font-weight: 600;
-  margin: 5px 0;           /* 5px top & bottom, 0 left & right */
-  padding: 0;
-
-}
-
-h3 {
-  font-size: 14px;
-  font-weight: 300;
-  margin: 10px 0; /* optional, if you want to remove default spacing */
-  padding: 0;
-}
-
-.subhead{
-  font-size:15px; font-weight:300;
-  margin-top:15px; margin-bottom:6px;
-}
-#patient-details,
-#current-rx,
-#add-details,
-#final-rx-section,
-#patient-weartype,
-#final-rx,
-#final-notes,
-#final-analysis,
-#final-analysis-sph,
-#final-analysis-cylax,
-#extra-notes {
-  line-height: 1.3;
-  font-size: 14px;
-  font-weight: 300;
-}
-
-}
-.image-placeholder{
-  background:#fffbd2; padding:40px 10px;
-  border-radius:12px; text-align:center;
-  margin-bottom:14px; font-size:13px; font-weight:300;
-  color:#555; border:1px dashed #c8c08a;
-}
-.footer-section{text-align:center; padding:20px;}
-.qr-placeholder{
-  background:#fffbd2; border:1px dashed #c8c08a;
-  padding:40px 10px; border-radius:12px;
-  font-size:13px; margin-bottom:15px;
-}
-.info{
-  font-size:13px;
-  line-height:1.3;
-  color:#2b2b2b;
-  letter-spacing:0.4px;
-  font-weight:300;
-}
-
-.disclaimer{ font-size:11px; opacity:.7; }
-.footer-brand{margin-top:10px; font-size:13px; font-weight:300;}
-/* PDF button also converted */
-.pdf-button-wrapper {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 12px; /* space between buttons */
-}
-
-.pdf-button {
-  padding: 12px 22px;
+button.active {
   background: black;
   color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 300;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-.cl-line { font-size:14px; color:#333; }
+span {
+  font-weight: bold;
+  margin: 0 10px;
+  font-size: 16px;
+}
 
-
+.controls {
+  margin-bottom: 10px;
+}
 </style>
 </head>
-
 <body>
 
-<div id="report-container">
-<div class="section2">
-  <!-- PATIENT HEADING -->
-  <div class="section" id="patient-current-section">
-    <h2 id="patient-name-h2">-</h2>
-    <span id="patient-age-h2">-</span> - 
-    <span id="exam-datetime">-</span>
-  </div>
+<h3>Combined Cylinder Calculator</h3>
 
-  <!-- CURRENT PRESCRIPTION -->
-  <div class="section" id="current-prescription-section">
-    <h2>Current Prescription</h2>
-    <div id="patient-subdetails" style="font-size:14px;"></div>
-    <div id="current-rx" style="margin-top:10px;"></div>
-    <div id="add-details" style="margin-top:10px;"></div>
-<div><br>
-  <h2>OR Bal</h2>
-  <span id="rx-summary">-</span>
+<div class="controls">
+  <b>Circle 1</b><br>
+  S: <input type="number" id="visual_s1" step="0.25" value="0">
+  C: <input type="number" id="visual_c1" step="0.25" value="0">
+  A: <input type="number" id="visual_a1" step="1" value="180" min="0" max="180"><br><br>
+
+  <b>Circle 2</b><br>
+  S: <input type="number" id="visual_s2" step="0.25" value="0">
+  C: <input type="number" id="visual_c2" step="0.25" value="0">
+  A: <input type="number" id="visual_a2" step="1" value="90" min="0" max="180"><br><br>
+
+  <b>Circle 3</b><br>
+  S: <input type="number" id="visual_s3" step="0.25" value="0">
+  C: <input type="number" id="visual_c3" step="0.25" value="0">
+  A: <input type="number" id="visual_a3" step="1" value="45" min="0" max="180">
 </div>
 
-  </div>
-
-
-
-<!-- SHORT / LONG SIGHTED & ASTIGMATISM TEST -->
-<div class="section"	>
-  <h2>Short & Long Sighted Analysis</h2>
-
-  <!-- Duochrome -->
-    <div id="exam-duochrome-details" style="text-align:left"></div>
-
-
-
-  <div id="exam-images-duo" style="text-align:center; margin-bottom:20px;">
-    <div style="width:100%; overflow:hidden; border:1px solid lightgrey; border-radius:12px; text-align:center; background:#fff;">
-
-
-      <img id="exam-duochrome" src="" style="width:100%; display:block; margin-top:20px; margin-bottom:-10px; transform: scale(1.15); transform-origin: center center; margin-left:-10px" crossOrigin="anonymous">
-
-    </div>
-  </div>
-
-
-
-  <h2>Astigmatism Analysis</h2>
-
-  <!-- Fan Chart -->
-    <div id="exam-astig-details" style="text-align:left"></div>
-
-
-  <div id="exam-images-fan" style="text-align:center; margin-bottom:0px;">
-    <div style="width:100%; overflow:hidden; border:1px solid lightgrey; border-radius:12px; text-align:center; background:#fff;">
-
-
-
-      <img id="exam-fanchart" src="" style="width:100%; display:block; margin-top:50px; margin-bottom:35px; transform: scale(1.3); transform-origin: center center; margin-left:-10px" crossOrigin="anonymous">
-
-
-
-    </div>
-  </div>
-</div>
+<div class="controls">
+  Effect: 
+  <button id="visual_fullBtn" class="active">Full</button>
+  <button id="visual_halfBtn">Half</button>
+  <button id="visual_planoToggle">Plano</button>
 </div>
 
-
-
-
-
-<div class="section2">
-  <!-- COMFY / MANUAL FINAL RX -->
-  <div class="section" id="final-rx-section">
-    <h2 id="final-rx-title">New Prescription</h2>
-    <div id="patient-weartype"></div>
-    <div id="final-rx"></div>
-  </div>
-
-
-  <!-- EXTRA NOTES -->
-  <div class="section" id="extra-notes-section">
-    <h2>Extra Notes</h2>
-    <div id="final-notes"></div>
-  </div>
-
-
-
-  <!-- SUMMARY -->
-  <div class="section" id="summary-section">
-    <h2>Summary</h2><br>
-    <div id="final-analysis"></div>
-    <div id="final-analysis-sph"></div>
-    <div id="final-analysis-cylax"></div>
-  </div>
-
-
+<div class="controls">
+  Toggle Circles:
+  <button id="visual_toggle1" class="active">Circle 1</button>
+  <button id="visual_toggle2" class="active">Circle 2</button>
+  <button id="visual_toggle3" class="active">Circle 3</button>
 </div>
 
+<canvas id="visual_canvas" width="600" height="500"></canvas>
 
+<br>
+<span id="visual_combinedSpan">0.00 0.00 x 0</span>
 
-  <!-- EDUCATION -->
-<div class="section2">
-  <div class="section" id="education-section">
-    <h2>Understanding Your Prescription</h2>
-    <div id="education-content">
-      <p class="info"><i>Short & long-sighted vision is measured using the duochrome chart. The clarity in the red and blue are compared. The correct prescription makes both side equal. The ideal prescription is when the clarity is slightly better in the blue; to be exact +0.25 to balance. </i></p>
-      <div style="max-width:100%; margin:auto;">
-        <img src="https://raw.githubusercontent.com/kiaraoptometrypx/RX_report/main/how_duochrome_works.png" alt="How duochrome works" style="width:100%; height:auto;">
-      </div>
-      <p class="info"><i>Astigmatism is a condition; unequal power at different angles. This is due to certain parts of the eye is flatter than the other. The Fan Chart is used to measure the differences in clarity. The correct prescription makes all lines equal. </i></p>
-      <div style="max-width:100%; margin:auto;">
-        <img src="https://raw.githubusercontent.com/kiaraoptometrypx/RX_report/main/how_astig_works_1.png" alt="How astig works 1" style="width:100%; height:auto;">
-      </div>
-      <div style="max-width:100%; margin:auto;">
-        <img src="https://raw.githubusercontent.com/kiaraoptometrypx/RX_report/main/how_astig_works_2.png" alt="How astig works 2" style="width:100%; height:auto;">
-      </div>
-      <p class="info"><i>Prescription is the measurement of the eyeball size and shape. A normal eye measures about 22–24.5 mm, while a zero-power eye is around 23.5 mm (0.25 D is about 0.09 mm). Prescription rarely changes after the age of 20 as most of it happens during teenage years.</i></p>
-    <p class="disclaimer">This summary is for personal understanding only.</p>
-    <p class="footer-brand">This eye exam and report is made my Jay Lee, Optometrist and founder of Kiara Optometry 2025.</p>
-    </div>
-  </div>
-
-</div>
-</div>
-
-<!-- PDF BUTTON -->
-<div class="pdf-button-wrapper">
-  <button id="downloadPDF" class="pdf-button">Full Report</button>
-  <button id="downloadSimple" class="pdf-button">Download JPG</button>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+<br><br>
+<button id="visual_saveRight">Save Right Eye</button>
+<button id="visual_saveLeft">Save Left Eye</button>
+<div id="visual_savedRows"></div>
 
 <script>
-function fmt(v){
-  if(v===""||v==null) return "";
-  let n=parseFloat(v);
-  if(isNaN(n)) return v;
-  return (n>=0?"+":"") + n.toFixed(2);
-}
-const data = JSON.parse(localStorage.getItem("rxReport") || "{}");
+const canvas = document.getElementById("visual_canvas");
+const ctx = canvas.getContext("2d");
+const cx = canvas.width/2, cy = canvas.height/2;
+const planoRadius = 120, baseScaleFactor = 15;
 
+// Inputs
+const s1=document.getElementById("visual_s1"), c1=document.getElementById("visual_c1"), a1=document.getElementById("visual_a1");
+const s2=document.getElementById("visual_s2"), c2=document.getElementById("visual_c2"), a2=document.getElementById("visual_a2");
+const s3=document.getElementById("visual_s3"), c3=document.getElementById("visual_c3"), a3=document.getElementById("visual_a3");
 
+// State
+let effectScale=1;
+let showPlano=false, show1=true, show2=true, show3=true;
 
-/* ==============================
-   PATIENT H2 + DATE/TIME
-============================== */
-(function(){
-  const fullName = `${data.suffix || ""} ${data.name || ""}`.trim();
-  const age = data.age || "";
+// Buttons
+const fullBtn=document.getElementById("visual_fullBtn"), halfBtn=document.getElementById("visual_halfBtn");
+const planoToggle=document.getElementById("visual_planoToggle");
+const toggle1=document.getElementById("visual_toggle1"), toggle2=document.getElementById("visual_toggle2"), toggle3=document.getElementById("visual_toggle3");
 
-  if (!fullName) return;
+// Effect buttons
+fullBtn.onclick = () => {effectScale=1; fullBtn.classList.add("active"); halfBtn.classList.remove("active"); draw();}
+halfBtn.onclick = () => {effectScale=0.5; halfBtn.classList.add("active"); fullBtn.classList.remove("active"); draw();}
 
-  const now = new Date();
-  const day = now.getDate();
-  const month = now.toLocaleString("en-GB",{month:"short"});
-  const year = now.getFullYear();
-  const suffix =
-    day % 10 === 1 && day !== 11 ? "st" :
-    day % 10 === 2 && day !== 12 ? "nd" :
-    day % 10 === 3 && day !== 13 ? "rd" : "th";
-  const time = now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
-  const dateTime = `Test done on ${day}${suffix} ${month} ${year} · ${time}`;
+// Plano toggle
+planoToggle.onclick = () => {showPlano=!showPlano; planoToggle.classList.toggle("active"); draw();}
 
-  document.getElementById("exam-datetime").textContent = dateTime;
-
-  // NEW — Separate name + age
-  document.getElementById("patient-name-h2").textContent = fullName;
-  document.getElementById("patient-age-h2").textContent = age ? `Age ${age}` : "";
-})();
-
-
-
-
-/* ==============================
-   CURRENT RX
-============================== */
-(function(){
-  const wear = data.wearType || "";
-  const wearCap = wear ? wear.charAt(0).toUpperCase() + wear.slice(1) : "";
-const fmtVal = v => v || "—";
-document.getElementById("current-rx").innerHTML = `
-  <div>
-    <div><b>RX type :</b> ${wearCap || "—"}</div>
-
-<div style="display:flex; justify-content:space-between; max-width:350px; margin:5px 0 5px 0; font-size:11px;">
-  <div style="font-size:14px;"><b>Right :</b> ${fmtVal(data.s1_od)} ${fmtVal(data.c1_od)} × ${fmtVal(data.a1_od)}</div>
-  <div style="font-size:14px;"><b>Left :</b> ${fmtVal(data.s1_os)} ${fmtVal(data.c1_os)} × ${fmtVal(data.a1_os)}</div>
-</div>
-`;
-
-})();
-
-/* ==============================
-   ADD DETAILS
-============================== */
-(function(){
-  document.getElementById("add-details").innerHTML =
-    data.add_ou ? `<div><b>Current ADD:</b> ${data.add_ou}</div>` : "";
-})();
-
-
-
-
-/* ==============================
-   EXAMINATION SECTION
-============================== */
-(function(){
-  const DC_BASE = "https://raw.githubusercontent.com/kiaraoptometrypx/RX-calculator/main/DC%20Defect/";
-  const FC_BASE = "https://raw.githubusercontent.com/kiaraoptometrypx/RX-calculator/main/FC%20Defect/";
-
-  const DC_MAP = {
-    red:   DC_BASE + "Red.png",
-    green: DC_BASE + "Green.png",
-    same:  DC_BASE + "Same.png",
-  };
-
-  function nearestAxisImg(axisVal){
-    if (isNaN(axisVal)) return "";
-    let shifted = axisVal + 90;
-    if (shifted > 180) shifted -= 180;
-
-    const angles = [15,30,45,60,75,90,105,120,135,150,165,180];
-    const closest = angles.reduce((a,b)=>
-      Math.abs(b-shifted) < Math.abs(a-shifted) ? b : a
-    );
-
-    return FC_BASE + closest + ".png";
+// Circle toggles
+const circleToggles = [
+  {btn: toggle1, get: ()=>show1, set: v=>show1=v, color: getComputedStyle(document.documentElement).getPropertyValue('--circle1-color')},
+  {btn: toggle2, get: ()=>show2, set: v=>show2=v, color: getComputedStyle(document.documentElement).getPropertyValue('--circle2-color')},
+  {btn: toggle3, get: ()=>show3, set: v=>show3=v, color: getComputedStyle(document.documentElement).getPropertyValue('--circle3-color')}
+];
+circleToggles.forEach(c=>{
+  c.btn.onclick = ()=>{
+    const newState = !c.get();
+    c.set(newState);
+    c.btn.classList.toggle("active", newState);
+    draw();
   }
+});
 
-  // === NEW: Bal.png logic for c2_ou ===
-  function getBalImg(c2_ou){
-    const v = parseFloat(c2_ou);
-    if (isNaN(v) || v === 0) return FC_BASE + "Bal.png";
-    return "";
-  }
-  // ====================================
+// Snap inputs and color coding
+[s1,c1,s2,c2,s3,c3].forEach(inp=>{
+  inp.addEventListener("input",()=>{ 
+    inp.value=(Math.round(parseFloat(inp.value)*4)/4).toFixed(2);
+    colorInput(inp);
+    draw(); 
+  });
+  inp.addEventListener("change",()=>{
+    inp.value=(Math.round(parseFloat(inp.value)*4)/4).toFixed(2);
+    colorInput(inp);
+    draw();
+  });
+});
 
-  const dcVal = fmt(data["dc-sph-ou"]);
-  const axisVal = parseFloat(data["a2-ou"] || NaN);
-  const c2ou = data.c2_ou;
+// Axis inputs: only whole numbers
+[a1,a2,a3].forEach(inp=>{
+  inp.addEventListener("input", ()=>{ inp.value = Math.round(parseFloat(inp.value)); draw(); });
+  inp.addEventListener("change", ()=>{ inp.value = Math.round(parseFloat(inp.value)); draw(); });
+});
 
-  let dcImg = DC_MAP.same;
-  if (!isNaN(dcVal)){
-    if (dcVal > 0) dcImg = DC_MAP.green;
-    else if (dcVal < 0) dcImg = DC_MAP.red;
-  }
-
-  // --- Fan Chart image decision ---
-  let fcImg = "";
-  const balImg = getBalImg(c2ou);    // auto Bal.png check first
-
-  if (balImg){
-    fcImg = balImg;
-  } else if (!isNaN(axisVal)) {
-    fcImg = nearestAxisImg(axisVal);
-  }
-
-let analysisText = "";
-if (!isNaN(dcVal)) {
-  if (Math.abs(dcVal - 0.25) < 0.01) {
-    analysisText = `is good; with slight preference for far. Needs ${fmt(dcVal)} to balance.`;
-  } else if (dcVal > 0) {
-    analysisText = `is slightly strong. Needs ${fmt(dcVal)} to balance.`;
-  } else if (dcVal < 0) {
-    analysisText = `is slightly weak. Needs ${fmt(dcVal)} to balance.`;
-  } else {
-analysisText = `is good; with slight preference for intermediate range. Needs ${dcVal ? fmt(dcVal) : "+0.00"} to balance.`;
-
-  }
+// Color input function
+function colorInput(inp){
+  if(parseFloat(inp.value) < 0) inp.style.color="red";
+  else inp.style.color="darkblue";
 }
 
+// Initial coloring
+[s1,c1,s2,c2,s3,c3].forEach(inp=>colorInput(inp));
 
-
-  // --- Duochrome ---
-  document.getElementById("exam-duochrome-details").innerHTML = `
-    <div><h3>Overall, your current vision ${analysisText}</h3></div>
-  `;
-
-// --- Astigmatism ---
-let axisText = "is equal and optimum at all angles.";
-
-// c2ou already available
-const cylVal = parseFloat(c2ou);
-
-if (isNaN(axisVal)) {
-  axisText = "is equal and optimum at all angles.";
-} else {
-  if (isNaN(cylVal) || cylVal === 0) {
-    axisText = `
-      is equal and optimum at all angles.
-    `;
-  } else {
-    axisText = `
-      is stronger at ${axisVal}°.
-      It needs ${c2ou} to reduce and balance.
-    `;
-  }
+// Draw plano
+function drawPlano(){
+  ctx.beginPath();
+  ctx.arc(cx, cy, planoRadius, 0, 2*Math.PI);
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--plano-color');
+  ctx.lineWidth = 2;
+  ctx.stroke();
 }
 
-document.getElementById("exam-astig-details").innerHTML = `
-  <div><h3>Your current vision ${axisText}</h3></div>
-`;
-
-
-  const imgDuo = document.getElementById("exam-duochrome");
-  imgDuo.src = dcImg;
-  imgDuo.style.display = "block";
-
-  const imgFan = document.getElementById("exam-fanchart");
-  imgFan.src = fcImg;
-  imgFan.style.display = "block";
-})();
-
-
-
-
-
-
-
-/* =========================
-   CONTACT LENS CONVERTER
-========================= */
-const CL_CYL_STEPS=[-0.75,-1.25,-1.75,-2.25,-2.75];
-
-function glassesToCL(F){ const d=0.009; return F/(1 - d*F); }
-function r025(x){
-  return Math.round(x * 4) / 4;
-}function roundUp025(x){ return Math.ceil(x/0.25)*0.25; }
-function nearest(arr,val){ return arr.reduce((b,v)=>Math.abs(v-val)<Math.abs(b-val)?v:b,arr[0]); }
-
-function flatterAxis(a){
-  a = parseFloat(a) || 0;
-  if (a <= 0) a = 180;
-  const R = Math.round(a / 10) * 10;
-  return R > 180 ? 180 : R;
-}
-
-function convertToCL(S, C, A) {
-  S = parseFloat(S) || 0;
-  C = parseFloat(C) || 0;
-  A = parseFloat(A) || 0;
-
-  const total = S + C;
-  const convS = glassesToCL(S);
-  const convT = glassesToCL(total);
-  const rawCyl = convT - convS;
-
-  const cylRounded = nearest(CL_CYL_STEPS, rawCyl);
-  const sphereRounded = r025(convS);  // ← FIXED
-
-  const axisRounded = flatterAxis(A);
-
-if (Math.abs(rawCyl) < 0.375){
-    const SE = r025(convS + rawCyl/2);
-    return { S: SE, C: 0, A: null };
-}
-
-
-  const diff = rawCyl - cylRounded;
-  const correctedSphere = r025(sphereRounded + diff/2); // ← FIXED
-
-  return {
-    S: correctedSphere,
-    C: cylRounded,
-    A: axisRounded
-  };
-}
-
-/* ==============================
-   COMFY / MANUAL FINAL RX
-============================== */
-const btnComfy = document.getElementById("toggle-comfy");
-const btnManual = document.getElementById("toggle-manual");
-const titleFinal = document.getElementById("final-rx-title");
-const finalRX = document.getElementById("final-rx");
-const finalNotes = document.getElementById("final-notes");
-const finalAnalysis      = document.getElementById("final-analysis");
-const finalAnalysisSph   = document.getElementById("final-analysis-sph");
-const finalAnalysisCylAx = document.getElementById("final-analysis-cylax");
-const addOutput  = document.getElementById("addOutput");
-const addOutput2 = document.getElementById("addOutput2");
-const resultNear = document.getElementById("result-near");
-const resultInter = document.getElementById("result-inter");
-
-
-function loadComfy() {
-  titleFinal.textContent = "New Prescription";
-
-  const fmtPlus = v => (v > 0 ? "+" + v.toFixed(2) : v.toFixed(2));
-
-  const rSph = (parseFloat(data.comfyR?.sph) || 0) + 0.25;
-  const lSph = (parseFloat(data.comfyL?.sph) || 0) + 0.25;
-
-  const rCyl = parseFloat(data.comfyR?.cyl) || 0;
-  const lCyl = parseFloat(data.comfyL?.cyl) || 0;
-
-  const rAxis = parseFloat(data.comfyR?.axis) || 0;
-  const lAxis = parseFloat(data.comfyL?.axis) || 0;
-
-  const rDist = rSph - 0.25,  lDist = lSph - 0.25;
-  const rComp = rSph + 0.25,  lComp = lSph + 0.25;
-
-  const rCL_bal  = convertToCL(rSph,  rCyl, rAxis);
-  const lCL_bal  = convertToCL(lSph,  lCyl, lAxis);
-
-  const rCL_dist = convertToCL(rDist, rCyl, rAxis);
-  const lCL_dist = convertToCL(lDist, lCyl, lAxis);
-
-  const rCL_comp = convertToCL(rComp, rCyl, rAxis);
-  const lCL_comp = convertToCL(lComp, lCyl, lAxis);
-
-  // === RX HTML ===
-  finalRX.innerHTML = `
-<div style="max-width:450px;">
-
-
-
-  <!-- A -->
-  <br><div><u><b>Distance Preferred RX (For glasses or contact lens use) :</b></u></div>
-  <div style="display:flex; justify-content:space-between; gap:8px; margin:6px 0 14px 0;">
-    <div style="width:85px;">
-      <b>Spectacles</b><br>
-      <span class="cl-line"><b>Contact Lens</b></span>
-    </div>
-    <div>
-      <b>Right :</b> ${fmtPlus(rDist)} ${fmtPlus(rCyl)} × ${rAxis}<br>
-      <span class="cl-line">
-        Right : ${fmtPlus(rCL_dist.S)} ${rCL_dist.C ? fmtPlus(rCL_dist.C) + " × " + rCL_dist.A : ""}
-      </span>
-    </div>
-    <div>
-      <b>Left :</b> ${fmtPlus(lDist)} ${fmtPlus(lCyl)} × ${lAxis}<br>
-      <span class="cl-line">
-        Left : ${fmtPlus(lCL_dist.S)} ${lCL_dist.C ? fmtPlus(lCL_dist.C) + " × " + lCL_dist.A : ""}
-      </span>
-    </div>
-  </div>
-
-
-
-  <!-- B -->
-  <div><u><b>Balance RX (For monitoring time to time) :</b></u></div>
-  <div style="display:flex; justify-content:space-between; gap:8px; margin:6px 0 14px 0;">
-    <div style="width:85px;">
-      <b>Spectacles</b><br>
-      <span class="cl-line"><b>Contact Lens</b></span>
-    </div>
-    <div>
-      <b>Right :</b> ${fmtPlus(rSph)} ${fmtPlus(rCyl)} × ${rAxis}<br>
-      <span class="cl-line">
-        Right : ${fmtPlus(rCL_bal.S)} ${rCL_bal.C ? fmtPlus(rCL_bal.C) + " × " + rCL_bal.A : ""}
-      </span>
-    </div>
-    <div>
-      <b>Left :</b> ${fmtPlus(lSph)} ${fmtPlus(lCyl)} × ${lAxis}<br>
-      <span class="cl-line">
-        Left : ${fmtPlus(lCL_bal.S)} ${lCL_bal.C ? fmtPlus(lCL_bal.C) + " × " + lCL_bal.A : ""}
-      </span>
-    </div>
-  </div>
-
-
-
-
-  
-</div>
-
-
-`;
-
-finalRX.innerHTML += `
-<div>Inter Add (Computer distance) : ${data.resultInter}</div>
-<div>Near Add (Phone distance) : ${data.resultNear}</div>
-
-`;
-
-
-
-  // === ANALYSIS ===
-  finalNotes.textContent = data.comfyNotes || "—";
-
-  finalAnalysis.innerHTML =
-    data.comfyAnalysis?.replace(/\n/g,"<br>") || "—";
-
-  finalAnalysisSph.innerHTML =
-    data.comfyAnalysisSph?.replace(/\n/g,"<br>") || "—";
-
-  finalAnalysisCylAx.innerHTML =
-    data.comfyAnalysisCylAx?.replace(/\n/g,"<br>") || "—";
-
-  btnComfy.classList.remove("inactive");
-  btnManual.classList.add("inactive");
-}
-
-
-
-
-/* =======================
-    INITIAL LOAD
-======================= */
-loadComfy();
-btnComfy.onclick = loadComfy;
-btnManual.onclick = loadManual;
-
-
-
-/* EXTRA NOTES */
-(function(){
-  document.getElementById("extra-notes").innerHTML =
-    (data.extraNotes || "").replace(/\n/g,"<br>");
-})();
-</script>
-
-
-
-
-
-<script>
-const s = data["dc-sph-ou"] || "—";
-const c = data["c2_ou"] || "—";
-const a = data["a2-ou"] || "—";
-
-document.getElementById("rx-summary").textContent = ` DC ${s} , FC ${c} x ${a}`;
-</script>
-
-
-
-<script>
-document.getElementById("downloadSimple").addEventListener("click", async () => {
-  const container = document.getElementById("report-container");
-  if (!container) return;
-
-  // Wait for all images to load
-  const imgs = container.querySelectorAll("img");
-  await Promise.all(Array.from(imgs).map(img => {
-    if (img.complete) return Promise.resolve();
-    return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
-  }));
-
-  const canvas = await html2canvas(container, { scale: 2, useCORS: true });
-  const scale = canvas.height / container.scrollHeight;
-
-  function getSliceRect(ids, topPad=0, bottomPad=0) {
-    const elements = ids.map(id => document.getElementById(id)).filter(el => el);
-    if (!elements.length) return { top: 0, bottom: 0 };
-    const containerRect = container.getBoundingClientRect();
-    const top = (elements[0].getBoundingClientRect().top - containerRect.top) * scale - topPad;
-    const bottom = (elements[elements.length - 1].getBoundingClientRect().bottom - containerRect.top) * scale + bottomPad;
-    return { top, bottom };
+// Draw ellipse
+function drawEllipse(S, C, A, color){
+  const rAxis = planoRadius - (S * baseScaleFactor * effectScale);
+  const rPerp = planoRadius - ((S + C) * baseScaleFactor * effectScale);
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(A*Math.PI/180);
+
+  ctx.beginPath();
+  ctx.ellipse(0,0,rAxis,rPerp,0,0,2*Math.PI);
+  ctx.strokeStyle=color;
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  if(C !== 0){
+    const lineLength = (rAxis + rPerp)/2;
+    ctx.setLineDash([5,5]);
+    ctx.beginPath();
+    ctx.moveTo(-lineLength,0);
+    ctx.lineTo(lineLength,0);
+    ctx.strokeStyle=color;
+    ctx.stroke();
+    ctx.setLineDash([]);
   }
 
-  const slices = [
-    getSliceRect([
-      "patient-current-section",
-      "current-prescription-section",
+  ctx.restore();
+}
 
-
-    ], 0, 0), // Page 1
-
-    getSliceRect([
-      "final-rx-section",
-"extra-notes-section"
-    ], 0, 0), // Page 2
-
+// Combine prescription (circle 1+2 only)
+function combinePrescriptions(){
+  const circles = [
+    {S: parseFloat(s1.value), C: parseFloat(c1.value), A: parseFloat(a1.value)},
+    {S: parseFloat(s2.value), C: parseFloat(c2.value), A: parseFloat(a2.value)}
   ];
 
-  // PADDING for final canvas
-  const PADDING = 30;
-
-  // Create stitched canvas with padding
-  const stitchedCanvas = document.createElement("canvas");
-  stitchedCanvas.width = canvas.width * slices.length + PADDING * 2;
-  stitchedCanvas.height = Math.max(...slices.map(s => s.bottom - s.top)) + PADDING * 2;
-  const ctx = stitchedCanvas.getContext("2d");
-
-  // Fill background white
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, stitchedCanvas.width, stitchedCanvas.height);
-
-  // Draw slices offset by padding
-  let xOffset = PADDING;
-  slices.forEach(slice => {
-    const height = slice.bottom - slice.top;
-    ctx.drawImage(canvas, 0, slice.top, canvas.width, height, xOffset, PADDING, canvas.width, height);
-    xOffset += canvas.width;
+  let M_total=0,J0_total=0,J45_total=0;
+  circles.forEach(c=>{
+    const rad=c.A*Math.PI/180;
+    const M=c.S + c.C/2;
+    const J0=-(c.C/2)*Math.cos(2*rad);
+    const J45=-(c.C/2)*Math.sin(2*rad);
+    M_total += M;
+    J0_total += J0;
+    J45_total += J45;
   });
 
-  // Export
-  const patientName = document.getElementById("patient-name-h2")?.textContent.trim() || "Unnamed";
-  const link = document.createElement("a");
-  link.href = stitchedCanvas.toDataURL("image/jpeg", 0.95);
-  link.download = patientName + "_RX.jpg";
-  link.click();
-});
-</script>
+  const C_total=-2*Math.sqrt(J0_total**2 + J45_total**2);
+  let axis_total=0.5*Math.atan2(J45_total,J0_total)*180/Math.PI;
+  if(axis_total<0) axis_total+=180;
+  const S_total=M_total - C_total/2;
 
+  const S_rounded=(Math.round(S_total*4)/4).toFixed(2);
+  const C_rounded=(Math.round(C_total*4)/4).toFixed(2);
+  const axis_rounded=Math.round(axis_total);
 
+  const prescString=`${S_rounded} ${C_rounded} x ${axis_rounded}`;
+  const span=document.getElementById("visual_combinedSpan");
+  span.innerText=prescString;
 
-<script>
-document.getElementById("downloadPDF").addEventListener("click", async () => {
-  const container = document.getElementById("report-container");
-  if (!container) return;
+  if(parseFloat(S_rounded)<0 || parseFloat(C_rounded)<0) span.style.color="red";
+  else span.style.color="darkblue";
 
-  // Wait for all images to load
-  const imgs = container.querySelectorAll("img");
-  await Promise.all(Array.from(imgs).map(img => {
-    if (img.complete) return Promise.resolve();
-    return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
-  }));
+  return prescString;
+}
 
-  const canvas = await html2canvas(container, { scale: 2, useCORS: true });
-  const scale = canvas.height / container.scrollHeight;
+// Draw all
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(showPlano) drawPlano();
+  if(show1) drawEllipse(parseFloat(s1.value),parseFloat(c1.value),parseFloat(a1.value),circleToggles[0].color);
+  if(show2) drawEllipse(parseFloat(s2.value),parseFloat(c2.value),parseFloat(a2.value),circleToggles[1].color);
+  if(show3) drawEllipse(parseFloat(s3.value),parseFloat(c3.value),parseFloat(a3.value),circleToggles[2].color);
+  combinePrescriptions();
+}
 
-  function getSliceRect(ids, topPad=0, bottomPad=0) {
-    const elements = ids.map(id => document.getElementById(id)).filter(el => el);
-    if (!elements.length) return { top: 0, bottom: 0 };
-    const containerRect = container.getBoundingClientRect();
-    const top = (elements[0].getBoundingClientRect().top - containerRect.top) * scale - topPad;
-    const bottom = (elements[elements.length - 1].getBoundingClientRect().bottom - containerRect.top) * scale + bottomPad;
-    return { top, bottom };
-  }
+// Save
+let savedData=[];
+document.getElementById("visual_saveRight").onclick=()=>{savedData.push({eye:"Right", presc:combinePrescriptions()}); updateSaved();}
+document.getElementById("visual_saveLeft").onclick=()=>{savedData.push({eye:"Left", presc:combinePrescriptions()}); updateSaved();}
+function updateSaved(){ document.getElementById("visual_savedRows").innerHTML = savedData.map(d=>`${d.eye}: ${d.presc}`).join("<br>"); }
 
-  const slices = [
-    getSliceRect([
-      "patient-current-section",
-      "current-prescription-section",
-      "exam-images-duo",
-      "exam-images-fan"
-    ], 0, 100), // Page 1
-
-    getSliceRect([
-      "final-rx-section",
-      "extra-notes-section",
-      "summary-section",
-
-    ], 0, 0), // Page 2
-
-    getSliceRect([
-      "education-section"
-    ], 0, 0) // Page 3
-  ];
-
-  // PADDING for final canvas
-  const PADDING = 30;
-
-  // Create stitched canvas with padding
-  const stitchedCanvas = document.createElement("canvas");
-  stitchedCanvas.width = canvas.width * slices.length + PADDING * 2;
-  stitchedCanvas.height = Math.max(...slices.map(s => s.bottom - s.top)) + PADDING * 2;
-  const ctx = stitchedCanvas.getContext("2d");
-
-  // Fill background white
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, stitchedCanvas.width, stitchedCanvas.height);
-
-  // Draw slices offset by padding
-  let xOffset = PADDING;
-  slices.forEach(slice => {
-    const height = slice.bottom - slice.top;
-    ctx.drawImage(canvas, 0, slice.top, canvas.width, height, xOffset, PADDING, canvas.width, height);
-    xOffset += canvas.width;
-  });
-
-  // Export with patient name or "Unnamed"
-  const patientName = document.getElementById("patient-name-h2")?.textContent.trim() || "Unnamed";
-  const link = document.createElement("a");
-  link.href = stitchedCanvas.toDataURL("image/jpeg", 0.95);
-link.download = patientName + "_Full_RX.jpg";
-  link.click();
-});
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+draw();
 </script>
 
 </body>
