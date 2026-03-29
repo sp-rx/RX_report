@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Eye Prescription Input</title>
+</head>
+<body>
+
 <h2>Input Form</h2>
 
 <input id="name" placeholder="Name"><br>
@@ -9,38 +17,39 @@
 
 <h2>Records</h2>
 <div id="output"></div>
-
 <button onclick="loadData()">Load Data</button>
-
-
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzZ8THUglmOUn9PvDFcdbpycoMQTOA8qGCwDqAQi-uMl8pUDw4mWqOHbR4PCvuGMowm/exec";
 
-function saveData(){
+// Save input to Google Sheets
+function saveData() {
+  alert("Clicked Save"); // debug
+
   const data = {
-    name: document.getElementById("name").value,
-    sph: document.getElementById("sph").value,
-    cyl: document.getElementById("cyl").value,
-    axis: document.getElementById("axis").value
+    name: document.getElementById("name").value || "",
+    sph: parseFloat(document.getElementById("sph").value) || 0,
+    cyl: parseFloat(document.getElementById("cyl").value) || 0,
+    axis: parseFloat(document.getElementById("axis").value) || 0
   };
 
   fetch(API_URL, {
     method: "POST",
+    mode: "no-cors", // ensures request isn’t blocked
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
   })
-  .then(res => res.text())
   .then(() => {
-    alert("Saved");
-    loadData(); // auto refresh
+    alert("Saved to Sheets!");
+    loadData(); // refresh records
   })
-  .catch(err => console.error(err));
+  .catch(err => console.error("POST error:", err));
 }
 
-function loadData(){
+// Load data from Google Sheets
+function loadData() {
   fetch(API_URL)
   .then(res => res.json())
   .then(data => {
@@ -50,6 +59,12 @@ function loadData(){
     });
     document.getElementById("output").innerHTML = html;
   })
-  .catch(err => console.error(err));
+  .catch(err => console.error("GET error:", err));
 }
+
+// Optional: auto-load on page open
+window.onload = loadData;
 </script>
+
+</body>
+</html>
