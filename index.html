@@ -7,12 +7,10 @@
 <body>
 
 <h2>Input Form</h2>
-
 <input id="name" placeholder="Name"><br>
 <input id="sph" placeholder="SPH"><br>
 <input id="cyl" placeholder="CYL"><br>
 <input id="axis" placeholder="AXIS"><br>
-
 <button onclick="saveData()">Save</button>
 
 <h2>Records</h2>
@@ -20,12 +18,10 @@
 <button onclick="loadData()">Load Data</button>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzZ8THUglmOUn9PvDFcdbpycoMQTOA8qGCwDqAQi-uMl8pUDw4mWqOHbR4PCvuGMowm/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzFCnM9N8mAl8AHKSF3BZVkxKXlGPXLr0TAF70cgei_gtCXqfcZ1znTs-ijW7NifXGC/exec";
 
 // Save input to Google Sheets
 function saveData() {
-  alert("Clicked Save"); // debug
-
   const data = {
     name: document.getElementById("name").value || "",
     sph: parseFloat(document.getElementById("sph").value) || 0,
@@ -35,17 +31,14 @@ function saveData() {
 
   fetch(API_URL, {
     method: "POST",
-    mode: "no-cors", // ensures request isn’t blocked
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   })
   .then(() => {
-    alert("Saved to Sheets!");
+    alert("Saved to Google Sheets!");
     loadData(); // refresh records
   })
-  .catch(err => console.error("POST error:", err));
+  .catch(err => console.error("Error saving:", err));
 }
 
 // Load data from Google Sheets
@@ -59,10 +52,10 @@ function loadData() {
     });
     document.getElementById("output").innerHTML = html;
   })
-  .catch(err => console.error("GET error:", err));
+  .catch(err => console.error("Error loading:", err));
 }
 
-// Optional: auto-load on page open
+// Auto-load on page open
 window.onload = loadData;
 </script>
 
