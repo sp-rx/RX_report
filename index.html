@@ -7,6 +7,13 @@
 
 <button onclick="saveData()">Save</button>
 
+<h2>Records</h2>
+<div id="output"></div>
+
+<button onclick="loadData()">Load Data</button>
+
+
+
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwV14NokUysyyHf1bbmymGIQbedaOSxV2_hvmbK7EzoCCQuHvc2a4ici8FVKDOm-QK4/exec";
 
@@ -20,32 +27,29 @@ function saveData(){
 
   fetch(API_URL, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(data)
   })
   .then(res => res.text())
-  .then(res => alert("Saved"));
+  .then(() => {
+    alert("Saved");
+    loadData(); // auto refresh
+  })
+  .catch(err => console.error(err));
 }
-</script>
 
-<h2>Records</h2>
-<div id="output"></div>
-
-<button onclick="loadData()">Load Data</button>
-
-<script>
 function loadData(){
   fetch(API_URL)
   .then(res => res.json())
   .then(data => {
     let html = "";
     data.forEach(d => {
-      html += `
-        <div>
-          ${d.Name} | ${d.SPH} | ${d.CYL} | ${d.AXIS}
-        </div>
-      `;
+      html += `<div>${d.Name || ""} | ${d.SPH || ""} | ${d.CYL || ""} | ${d.AXIS || ""}</div>`;
     });
     document.getElementById("output").innerHTML = html;
-  });
+  })
+  .catch(err => console.error(err));
 }
 </script>
