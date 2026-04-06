@@ -2,27 +2,25 @@
 <html>
 <head>
   <title>Send Photos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
 <h2>Send Photos</h2>
 
-<input type="file" id="photos" multiple accept="image/*">
+<input type="file" id="photos" multiple accept="image/*" capture="environment">
 
 <br><br>
 
-<button onclick="openGmail()">Send to Kiara Optometry</button>
+<button onclick="sendEmail()">Send</button>
 
 <script>
-function openGmail() {
+function sendEmail() {
   const subject = encodeURIComponent("Patient Photos");
   const body = encodeURIComponent("Photos attached.");
 
-  const url = "https://mail.google.com/mail/?view=cm&fs=1&to=kiara.optometry.px@gmail.com"
-              + "&su=" + subject
-              + "&body=" + body;
-
-  window.open(url, "_blank");
+  window.location.href =
+    "mailto:kiara.optometry.px@gmail.com?subject=" + subject + "&body=" + body;
 }
 </script>
 
