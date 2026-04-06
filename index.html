@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Send Photos</title>
+  <title>Send Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
-<h2>Send Patient Photos</h2>
+<h2>Send Patient Details</h2>
 
 <label>Patient Name:</label><br>
 <input type="text" id="name" placeholder="Enter name"><br><br>
@@ -14,33 +14,55 @@
 <label>WhatsApp Number:</label><br>
 <input type="tel" id="phone" placeholder="Enter WhatsApp number"><br><br>
 
-<input type="file" id="photos" multiple accept="image/*" capture="environment">
+<br>
 
-<br><br>
-
-<button onclick="sendEmail()">Send</button>
+<button onclick="sendMailApp()">Send via PC</button>
+<button onclick="sendGmail()">Send via Phone</button>
 
 <script>
-function sendEmail() {
+function getDetails() {
   const name = document.getElementById("name").value.trim();
   const phone = document.getElementById("phone").value.trim();
 
   if (!name || !phone) {
     alert("Fill in name and WhatsApp number");
-    return;
+    return null;
   }
 
-  const subject = encodeURIComponent("Patient Photos - " + name);
+  const subject = name + " - " + phone;
 
-  const body = encodeURIComponent(
-    "Patient Details:\n" +
+  const body =
     "Name: " + name + "\n" +
-    "WhatsApp: " + phone + "\n\n" +
-    "Photos attached."
-  );
+    "WhatsApp: " + phone + "\n\n";
+
+  return { subject, body };
+}
+
+// Apple Mail (mailto)
+function sendMailApp() {
+  const data = getDetails();
+  if (!data) return;
+
+  const subject = encodeURIComponent(data.subject);
+  const body = encodeURIComponent(data.body);
 
   window.location.href =
     "mailto:kiara.optometry.px@gmail.com?subject=" + subject + "&body=" + body;
+}
+
+// Gmail (web)
+function sendGmail() {
+  const data = getDetails();
+  if (!data) return;
+
+  const subject = encodeURIComponent(data.subject);
+  const body = encodeURIComponent(data.body);
+
+  const url = "https://mail.google.com/mail/?view=cm&fs=1&to=kiara.optometry.px@gmail.com"
+              + "&su=" + subject
+              + "&body=" + body;
+
+  window.open(url, "_blank");
 }
 </script>
 
