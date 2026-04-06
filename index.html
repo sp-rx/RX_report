@@ -1,62 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Eye Prescription Input</title>
+  <title>Send Photos</title>
 </head>
 <body>
 
-<h2>Input Form</h2>
-<input id="name" placeholder="Name"><br>
-<input id="sph" placeholder="SPH"><br>
-<input id="cyl" placeholder="CYL"><br>
-<input id="axis" placeholder="AXIS"><br>
-<button onclick="saveData()">Save</button>
+<h2>Send Photos</h2>
 
-<h2>Records</h2>
-<div id="output"></div>
-<button onclick="loadData()">Load Data</button>
+<input type="file" id="photos" multiple accept="image/*">
+
+<br><br>
+
+<button onclick="openGmail()">Send to Kiara Optometry</button>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzFCnM9N8mAl8AHKSF3BZVkxKXlGPXLr0TAF70cgei_gtCXqfcZ1znTs-ijW7NifXGC/exec";
+function openGmail() {
+  const subject = encodeURIComponent("Patient Photos");
+  const body = encodeURIComponent("Photos attached.");
 
-// Save input to Google Sheets
-function saveData() {
-  const data = {
-    name: document.getElementById("name").value || "",
-    sph: parseFloat(document.getElementById("sph").value) || 0,
-    cyl: parseFloat(document.getElementById("cyl").value) || 0,
-    axis: parseFloat(document.getElementById("axis").value) || 0
-  };
+  const url = "https://mail.google.com/mail/?view=cm&fs=1&to=kiara.optometry.px@gmail.com"
+              + "&su=" + subject
+              + "&body=" + body;
 
-  fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-  .then(() => {
-    alert("Saved to Google Sheets!");
-    loadData(); // refresh records
-  })
-  .catch(err => console.error("Error saving:", err));
+  window.open(url, "_blank");
 }
-
-// Load data from Google Sheets
-function loadData() {
-  fetch(API_URL)
-  .then(res => res.json())
-  .then(data => {
-    let html = "";
-    data.forEach(d => {
-      html += `<div>${d.Name || ""} | ${d.SPH || ""} | ${d.CYL || ""} | ${d.AXIS || ""}</div>`;
-    });
-    document.getElementById("output").innerHTML = html;
-  })
-  .catch(err => console.error("Error loading:", err));
-}
-
-// Auto-load on page open
-window.onload = loadData;
 </script>
 
 </body>
