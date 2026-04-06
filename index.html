@@ -6,7 +6,13 @@
 </head>
 <body>
 
-<h2>Send Photos</h2>
+<h2>Send Patient Photos</h2>
+
+<label>Patient Name:</label><br>
+<input type="text" id="name" placeholder="Enter name"><br><br>
+
+<label>WhatsApp Number:</label><br>
+<input type="tel" id="phone" placeholder="Enter WhatsApp number"><br><br>
 
 <input type="file" id="photos" multiple accept="image/*" capture="environment">
 
@@ -16,8 +22,22 @@
 
 <script>
 function sendEmail() {
-  const subject = encodeURIComponent("Patient Photos");
-  const body = encodeURIComponent("Photos attached.");
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+
+  if (!name || !phone) {
+    alert("Fill in name and WhatsApp number");
+    return;
+  }
+
+  const subject = encodeURIComponent("Patient Photos - " + name);
+
+  const body = encodeURIComponent(
+    "Patient Details:\n" +
+    "Name: " + name + "\n" +
+    "WhatsApp: " + phone + "\n\n" +
+    "Photos attached."
+  );
 
   window.location.href =
     "mailto:kiara.optometry.px@gmail.com?subject=" + subject + "&body=" + body;
