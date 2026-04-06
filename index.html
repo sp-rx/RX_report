@@ -4,20 +4,27 @@
   <title>Send Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+<style>
+input, button {
+border-radius:10px;
+border:1px solid grey
+}
+
+</style>
 <body>
 
 <h2>Send Patient Details</h2>
 
 <label>Patient Name:</label><br>
-<input type="text" id="name" placeholder="Enter name"><br><br>
+<input style="width:59%; height:40px" type="text" id="name" placeholder="Enter name"><br><br>
 
 <label>WhatsApp Number:</label><br>
-<input type="tel" id="phone" placeholder="Enter WhatsApp number"><br><br>
+<input style="width:59%; height:40px" type="tel" id="phone" placeholder="Enter WhatsApp number"><br><br>
 
 <br>
 
-<button onclick="sendMailApp()">Send via PC</button>
-<button onclick="sendGmail()">Send via Phone</button>
+<button style="width:30%; height:40px" onclick="sendMailApp()">Send via PC</button>
+<button style="width:30%; height:40px" onclick="sendGmail()">Send via Phone</button>
 
 <script>
 function getDetails() {
