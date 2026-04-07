@@ -30,16 +30,15 @@ function getDetails() {
   const name = document.getElementById("name").value.trim();
   const phone = document.getElementById("phone").value.trim();
 
-  if (!name || !phone) {
-    alert("Fill in name and WhatsApp number");
-    return null;
+  let subject = "";
+
+  if (!name && !phone) {
+    subject = "Unnamed No Number";
+  } else {
+    subject = (name || "Unnamed") + " - " + (phone || "No Number");
   }
 
-  const subject = name + " - " + phone;
-
-  const body =
-    "Name: " + name + "\n" +
-    "WhatsApp: " + phone + "\n\n";
+  const body = ""; // empty body
 
   return { subject, body };
 }
@@ -47,7 +46,6 @@ function getDetails() {
 // Apple Mail (mailto)
 function sendMailApp() {
   const data = getDetails();
-  if (!data) return;
 
   const subject = encodeURIComponent(data.subject);
   const body = encodeURIComponent(data.body);
@@ -59,7 +57,6 @@ function sendMailApp() {
 // Gmail (web)
 function sendGmail() {
   const data = getDetails();
-  if (!data) return;
 
   const subject = encodeURIComponent(data.subject);
   const body = encodeURIComponent(data.body);
